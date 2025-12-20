@@ -7,3 +7,4 @@ install_utils_packages:
   - net-tools
   - tmux
   - speedtest-cli
+  - python-is-python3
