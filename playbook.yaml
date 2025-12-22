@@ -3,6 +3,7 @@
   hosts: all
   roles:
     - install_utils
+    - install_fonts
     - install_alacritty
     - configure_bash
     - configure_vim
