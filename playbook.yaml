@@ -6,7 +6,6 @@
     - install_fonts
     - install_alacritty
     - configure_bash
-    - configure_vim
     - install_i3
     - configure_git
     - install_docker
