@@ -14,3 +14,4 @@
     - install_python_tools
     - install_nodejs
     - install_infrastructure_tools
+    - setup_neovim

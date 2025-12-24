@@ -1,0 +1,24 @@
+---
+- name: Install neovim
+  become: true
+  ansible.builtin.apt:
+    name: neovim
+    state: present
+    update_cache: true
+
+- name: Create config directory for neovim
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/nvim"
+    state: directory
+    mode: "0755"
+
+- name: Copy configuration files for neovim
+  ansible.builtin.copy:
+    src: "files/config/"
+    dest: "{{ ansible_env.HOME }}/.config/nvim/"
+    mode: "0644"
+
+- name: Sync lazy plugins for neovim
+  ansible.builtin.command: nvim --headless +Lazy! sync +qa
+  changed_when: false
+
