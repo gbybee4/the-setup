@@ -1,6 +1,6 @@
 def test_neovim_is_installed(host):
-    package = host.package("neovim")
-    assert package.is_installed, "Neovim should be installed"
+    result = host.run("nvim --version")
+    assert result.rc == 0, "Neovim should be installed and executable"
 
 
 def test_config_dir_is_populated(host):

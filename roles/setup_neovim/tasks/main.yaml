@@ -1,10 +1,11 @@
 ---
-- name: Install neovim
+- name: Download neovim AppImage
   become: true
-  ansible.builtin.apt:
-    name: neovim
-    state: present
-    update_cache: true
+  ansible.builtin.get_url:
+    url: "https://github.com/neovim/neovim/releases/download/v{{ setup_neovim_version }}/nvim-linux-{{ ansible_architecture }}.appimage"
+    dest: "/usr/local/bin/nvim"
+    mode: "0755"
+    force: true
 
 - name: Create config directory for neovim
   ansible.builtin.file:
@@ -21,4 +22,3 @@
 - name: Sync lazy plugins for neovim
   ansible.builtin.command: nvim --headless +Lazy! sync +qa
   changed_when: false
-
