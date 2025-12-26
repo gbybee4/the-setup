@@ -11,4 +11,3 @@ install_utils_packages:
   - python-is-python3
   - ripgrep
   - fd-find
-
