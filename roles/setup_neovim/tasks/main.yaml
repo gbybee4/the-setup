@@ -22,3 +22,4 @@
 - name: Sync lazy plugins for neovim
   ansible.builtin.command: nvim --headless +Lazy! sync +qa
   changed_when: false
+

@@ -1,5 +1,6 @@
 ---
 install_utils_packages:
+  - build-essential
   - unzip
   - tree
   - jq
@@ -8,3 +9,6 @@ install_utils_packages:
   - tmux
   - speedtest-cli
   - python-is-python3
+  - ripgrep
+  - fd-find
+
