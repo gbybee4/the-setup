@@ -10,6 +10,8 @@ alias lh='ls -haltr'
 
 alias mkdirs='mkdir -pv'
 
+alias fd='fdfind'
+
 alias qr='quick-run'
 
 alias tf='terraform'
