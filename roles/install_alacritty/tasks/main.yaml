@@ -27,6 +27,7 @@
     src: "alacritty.toml"
     dest: "{{ ansible_env.HOME }}/.config/alacritty/alacritty.toml"
     mode: "644"
+    backup: true
 
 - name: Download Dracula theme for Alacritty
   ansible.builtin.get_url:
