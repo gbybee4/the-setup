@@ -1,15 +1,13 @@
 ---
-- name: Set editor to neovim
+- name: Set global git config
   community.general.git_config:
     scope: global
-    name: core.editor
-    value: nvim
-
-- name: Set push behavior
-  community.general.git_config:
-    scope: global
-    name: push.default
-    value: current
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+  loop:
+    - { name: core.editor, value: "nvim" }
+    - { name: push.default, value: "current" }
+    - { name: pull.rebase, value: "true" }
 
 - name: Set git aliases
   community.general.git_config:
