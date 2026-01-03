@@ -1,4 +1,3 @@
--- Disable netrw (for nvim-tree)
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
@@ -21,17 +20,37 @@ opt.list = true
 opt.foldmethod = "expr"
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldlevel = 99
+opt.fillchars:append({ eob = " " })
 
 -- =========================
 -- Autocommands
 -- =========================
+
+vim.api.nvim_create_autocmd("BufReadPost", {
+  desc = "Restore cursor position when reopening files",
+  callback = function()
+    local row, col = unpack(vim.api.nvim_buf_get_mark(0, '"'))
+    if row > 0 and row <= vim.api.nvim_buf_line_count(0) then
+      pcall(vim.api.nvim_win_set_cursor, 0, { row, col })
+    end
+  end,
+})
+
 vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = "*",
+  desc = "Create parent directories on save",
   callback = function(args)
     local dir = vim.fn.fnamemodify(args.file, ":p:h")
     if dir ~= "" then
       vim.fn.mkdir(dir, "p")
     end
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "Close NvimTree and Undotree with Escape",
+  pattern = { "NvimTree", "undotree" },
+  callback = function(event)
+      vim.keymap.set("n", "<Esc>", "<cmd>close<CR>", { buffer = event.buf, silent = true })
   end,
 })
 
@@ -57,14 +76,17 @@ map({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete without overwriting cli
 map({ "n", "v" }, "<leader>y", [["+y]], { desc = "Yank to system clipboard" })
 map("n", "<leader>Y", [["+Y]], { desc = "Yank line to system clipboard" })
 
+map("n", "<Esc>", "<cmd>nohlsearch<cr>")
+
 -- Quick run
-map("n", "<F2>", function()
-  vim.cmd("w")
+local pedal_key = "<F2>"
+map("n", pedal_key, function()
+  vim.cmd("wa")
   vim.fn.jobstart("quick-run-go")
 end, { silent = true })
-map("i", "<F2>", function()
+map("i", pedal_key, function()
   vim.cmd("stopinsert")
-  vim.cmd("w")
+  vim.cmd("wa")
   vim.fn.jobstart("quick-run-go")
 end, { silent = true })
 
@@ -95,12 +117,25 @@ require("lazy").setup({
     name = "dracula",
     config = function()
       vim.cmd("colorscheme dracula")
-      vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-      -- Fix poor contrast in bufferline
       local dracula_foreground = "#f8f8f2"
-      local dracula_comment = "#6272a4"
-      vim.api.nvim_set_hl(0, "BufferCurrentMod", { fg = dracula_foreground })
-      vim.api.nvim_set_hl(0, "BufferInactiveMod", { fg = dracula_comment })
+      local dracula_background = "#21222c"
+      local dracula_current_line = "#44475a"  -- TODO: Highlight selected buffer
+      local dracula_purple = "#bd93f9"
+      -- Transparent backround to reveal dark terminal background
+      vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+      vim.api.nvim_set_hl(0, "WinSeparator", { bg = "none" })
+      vim.api.nvim_set_hl(0, "Title", { fg = dracula_foreground })
+      -- Customize the dracula theme for bufferline
+      vim.api.nvim_set_hl(0, "BufferLineFill", { bg = dracula_background })
+      vim.api.nvim_set_hl(0, "BufferLineBackground", { bg = dracula_background })
+      vim.api.nvim_set_hl(0, "BufferLineCloseButton", { bg = dracula_background })
+      vim.api.nvim_set_hl(0, "BufferLineCloseButtonSelected", { bg = dracula_background })
+      vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = dracula_foreground, bg = dracula_background, bold = true })
+      vim.api.nvim_set_hl(0, "BufferLineSeparator", { bg = dracula_background })
+      vim.api.nvim_set_hl(0, "BufferLineSeparatorSelected", { bg = dracula_background })
+      vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected", { fg = dracula_purple, bg = dracula_background })
+      vim.api.nvim_set_hl(0, "BufferLineIconDefault", { fg = dracula_foreground, bg = dracula_background })
     end,
   },
   {
@@ -109,21 +144,30 @@ require("lazy").setup({
       "nvim-tree/nvim-web-devicons",
     },
     config = function()
+      -- Customize dracula theme for lualine
+      local dracula = require("lualine.themes.dracula")
+      local dracula_background = "#21222c"
+      local dracula_current_line = "#44475a"
+      local modes = { "normal", "insert", "visual", "replace", "command", "inactive" }
+      for _, mode in ipairs(modes) do
+        dracula[mode].b.bg = dracula_current_line
+        dracula[mode].c.bg = dracula_background
+      end
       require("lualine").setup({
         options = {
-          theme = "dracula",
+          theme = dracula,
           globalstatus = true,
+          section_separators = "",
+          component_separators = "",
         },
         sections = {
+          lualine_b = { "branch" },
+          lualine_c = { { "filename", file_status = true, path = 1 } },
           lualine_x = { "encoding" },
           lualine_y = { "filetype" },
         },
       })
     end,
-  },
-  {
-    "tpope/vim-commentary",
-    keys = { "gc", "gcc" },
   },
   {
     "tpope/vim-surround",
@@ -134,25 +178,33 @@ require("lazy").setup({
     lazy = false,
     opts = {
       suggestion = {
-        enabled = true,
         auto_trigger = true,
-        debounce = 75,
+        debounce = 50,
         keymap = {
           accept = false,
         },
       },
+      filetypes = {
+        yaml = true,
+        markdown = true,
+        ["."] = true,
+      },
     },
     config = function(_, opts)
       require("copilot").setup(opts)
+      local suggestion = require("copilot.suggestion")
       map("i", "<Tab>", function()
-        if require("copilot.suggestion").is_visible() then
-          return require("copilot.suggestion").accept()
+        if suggestion.is_visible() then
+          return suggestion.accept()
+        else
+          return "<Tab>"
         end
       end, { expr = true, silent = true, desc = "Accept Copilot suggestion" })
     end,
   },
   {
     "nvim-telescope/telescope.nvim",
+    lazy = false, -- Required for compatability with alpha-nvim
     keys = {
       { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
       { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live Grep" },
@@ -167,34 +219,35 @@ require("lazy").setup({
       telescope.load_extension("fzf")
       telescope.setup({
         defaults = {
-          mappings = {
-            i = {
-              ["<C-j>"] = "move_selection_next",
-              ["<C-k>"] = "move_selection_previous",
-            },
+          file_ignore_patterns = { "%.git/" },
+        },
+        pickers = {
+          find_files = {
+            hidden = true,
           },
         },
       })
     end,
   },
   {
-    "romgrk/barbar.nvim",
+    "akinsho/bufferline.nvim",
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
-    init = function()
-      vim.g.barbar_auto_setup = false
-      map("n", "<C-h>", "<cmd>BufferPrevious<cr>", { desc = "Previous buffer" })
-      map("n", "<C-l>", "<cmd>BufferNext<cr>", { desc = "Next buffer" })
-      map("n", "<C-q>", "<cmd>BufferClose<cr>", { desc = "Close buffer" })
-      map("n", "<C-p>", "<cmd>BufferPick<cr>", { desc = "Pick buffer" })
-      for i = 1, 9 do
-        map("n", "<A-" .. i .. ">", "<cmd>BufferGoto " .. i .. "<cr>", { desc = "Go to buffer " .. i })
-      end
+    config = function()
+      require("bufferline").setup({
+        options = {
+          always_show_bufferline = false,
+          show_buffer_close_icons = false,
+        },
+      })
+      map("n", "<C-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Previous buffer" })
+      map("n", "<C-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+      map("n", "<C-S-h>", "<cmd>BufferLineMovePrev<cr>", { desc = "Move buffer left" })
+      map("n", "<C-S-l>", "<cmd>BufferLineMoveNext<cr>", { desc = "Move buffer right" })
+      map("n", "<C-q>", "<cmd>bdelete<cr>", { desc = "Close buffer" })
+      map("n", "<C-p>", "<cmd>BufferLinePick<cr>", { desc = "Pick buffer" })
     end,
-    opts = {
-      auto_hide = true,
-    },
   },
   {
     "nvim-tree/nvim-tree.lua",
@@ -206,6 +259,29 @@ require("lazy").setup({
     },
     config = function()
       require("nvim-tree").setup({
+        view = {
+          float = {
+            enable = true,
+            open_win_config = function()
+              local screen_w = vim.opt.columns:get()
+              local screen_h = vim.opt.lines:get() - vim.opt.cmdheight:get()
+              local window_w = math.floor(screen_w * 0.8)
+              local window_h = math.floor(screen_h * 0.8)
+              local center_x = (screen_w - window_w) / 2
+              local center_y = ((vim.opt.lines:get() - window_h) / 2) - vim.opt.cmdheight:get()
+              return {
+                border = "rounded",
+                relative = "editor",
+                row = center_y,
+                col = center_x,
+                title = " Tree ",
+                title_pos = "center",
+                width = window_w,
+                height = window_h,
+              }
+            end,
+          },
+        },
         actions = {
           open_file = {
             quit_on_open = true,
@@ -241,4 +317,62 @@ require("lazy").setup({
     "lewis6991/gitsigns.nvim",
     event = { "BufReadPost", "BufNewFile" },
   },
+  {
+    "goolord/alpha-nvim",
+    config = function()
+      dashboard = require("alpha.themes.dashboard")
+      local header_art = {
+          "███    ██ ███████  ██████  ██    ██ ██ ███    ███",
+          "████   ██ ██      ██    ██ ██    ██ ██ ████  ████",
+          "██ ██  ██ █████   ██    ██ ██    ██ ██ ██ ████ ██",
+          "██  ██ ██ ██      ██    ██  ██  ██  ██ ██  ██  ██",
+          "██   ████ ███████  ██████    ████   ██ ██      ██",
+      }
+      dashboard.section.header.val = header_art
+      dashboard.section.header.opts = {
+        position = "center",
+      }
+      dashboard.section.buttons.val = {
+        dashboard.button("<leader>ff", "  Find File", "<cmd>Telescope find_files<cr>"),
+        dashboard.button("<leader>fg", "  Live Grep", "<cmd>Telescope live_grep<cr>"),
+      }
+      window_height = vim.api.nvim_win_get_height(0)
+      content_height = #header_art + 2 * #dashboard.section.buttons.val + 2
+      padding_height = math.max(0, math.floor((window_height - #header_art) / 2))
+      local opts = {
+        layout = {
+          { type = "padding", val = padding_height },
+          dashboard.section.header,
+          { type = "padding", val = 2 },
+          dashboard.section.buttons,
+          { type = "padding", val = window_height },
+        },
+        opts = { noautocmd = true },
+      }
+      require("alpha").setup(opts)
+    end,
+  },
+  {
+    "akinsho/toggleterm.nvim",
+    opts = {
+      open_mapping = "<C-t>",
+      size = 20,
+      shade_terminals = false,
+      highlights = {
+        Normal = {
+          guibg = "none",
+        },
+      },
+    },
+  },
+  {
+    "shortcuts/no-neck-pain.nvim",
+    opts = {
+      width = 120,
+      autocmds = {
+        enableOnVimEnter = true,
+      },
+    },
+  },
 })
+
