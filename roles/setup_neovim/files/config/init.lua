@@ -50,7 +50,7 @@ vim.api.nvim_create_autocmd("FileType", {
   desc = "Close NvimTree and Undotree with Escape",
   pattern = { "NvimTree", "undotree" },
   callback = function(event)
-      vim.keymap.set("n", "<Esc>", "<cmd>close<CR>", { buffer = event.buf, silent = true })
+    vim.keymap.set("n", "<Esc>", "<cmd>close<CR>", { buffer = event.buf, silent = true })
   end,
 })
 
@@ -113,94 +113,12 @@ vim.opt.rtp:prepend(lazypath)
 -- =========================
 require("lazy").setup({
   {
-    "dracula/vim",
-    name = "dracula",
-    config = function()
-      vim.cmd("colorscheme dracula")
-      local dracula_foreground = "#f8f8f2"
-      local dracula_background = "#21222c"
-      local dracula_current_line = "#44475a"  -- TODO: Highlight selected buffer
-      local dracula_purple = "#bd93f9"
-      -- Transparent backround to reveal dark terminal background
-      vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-      vim.api.nvim_set_hl(0, "WinSeparator", { bg = "none" })
-      vim.api.nvim_set_hl(0, "Title", { fg = dracula_foreground })
-      -- Customize the dracula theme for bufferline
-      vim.api.nvim_set_hl(0, "BufferLineFill", { bg = dracula_background })
-      vim.api.nvim_set_hl(0, "BufferLineBackground", { bg = dracula_background })
-      vim.api.nvim_set_hl(0, "BufferLineCloseButton", { bg = dracula_background })
-      vim.api.nvim_set_hl(0, "BufferLineCloseButtonSelected", { bg = dracula_background })
-      vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = dracula_foreground, bg = dracula_background, bold = true })
-      vim.api.nvim_set_hl(0, "BufferLineSeparator", { bg = dracula_background })
-      vim.api.nvim_set_hl(0, "BufferLineSeparatorSelected", { bg = dracula_background })
-      vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected", { fg = dracula_purple, bg = dracula_background })
-      vim.api.nvim_set_hl(0, "BufferLineIconDefault", { fg = dracula_foreground, bg = dracula_background })
-    end,
-  },
-  {
-    "nvim-lualine/lualine.nvim",
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-    },
-    config = function()
-      -- Customize dracula theme for lualine
-      local dracula = require("lualine.themes.dracula")
-      local dracula_background = "#21222c"
-      local dracula_current_line = "#44475a"
-      local modes = { "normal", "insert", "visual", "replace", "command", "inactive" }
-      for _, mode in ipairs(modes) do
-        dracula[mode].b.bg = dracula_current_line
-        dracula[mode].c.bg = dracula_background
-      end
-      require("lualine").setup({
-        options = {
-          theme = dracula,
-          globalstatus = true,
-          section_separators = "",
-          component_separators = "",
-        },
-        sections = {
-          lualine_b = { "branch" },
-          lualine_c = { { "filename", file_status = true, path = 1 } },
-          lualine_x = { "encoding" },
-          lualine_y = { "filetype" },
-        },
-      })
-    end,
-  },
-  {
     "tpope/vim-surround",
     event = "VeryLazy",
   },
   {
-    "zbirenbaum/copilot.lua",
-    lazy = false,
-    opts = {
-      suggestion = {
-        auto_trigger = true,
-        debounce = 50,
-        keymap = {
-          accept = false,
-        },
-      },
-      filetypes = {
-        yaml = true,
-        markdown = true,
-        ["."] = true,
-      },
-    },
-    config = function(_, opts)
-      require("copilot").setup(opts)
-      local suggestion = require("copilot.suggestion")
-      map("i", "<Tab>", function()
-        if suggestion.is_visible() then
-          return suggestion.accept()
-        else
-          return "<Tab>"
-        end
-      end, { expr = true, silent = true, desc = "Accept Copilot suggestion" })
-    end,
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
   },
   {
     "nvim-telescope/telescope.nvim",
@@ -227,26 +145,6 @@ require("lazy").setup({
           },
         },
       })
-    end,
-  },
-  {
-    "akinsho/bufferline.nvim",
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-    },
-    config = function()
-      require("bufferline").setup({
-        options = {
-          always_show_bufferline = false,
-          show_buffer_close_icons = false,
-        },
-      })
-      map("n", "<C-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Previous buffer" })
-      map("n", "<C-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
-      map("n", "<C-S-h>", "<cmd>BufferLineMovePrev<cr>", { desc = "Move buffer left" })
-      map("n", "<C-S-l>", "<cmd>BufferLineMoveNext<cr>", { desc = "Move buffer right" })
-      map("n", "<C-q>", "<cmd>bdelete<cr>", { desc = "Close buffer" })
-      map("n", "<C-p>", "<cmd>BufferLinePick<cr>", { desc = "Pick buffer" })
     end,
   },
   {
@@ -291,10 +189,6 @@ require("lazy").setup({
     end,
   },
   {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-  },
-  {
     "mbbill/undotree",
     keys = {
       { "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "Toggle Undotree" },
@@ -318,15 +212,118 @@ require("lazy").setup({
     event = { "BufReadPost", "BufNewFile" },
   },
   {
+    "akinsho/toggleterm.nvim",
+    opts = {
+      open_mapping = "<C-t>",
+      size = 20,
+      shade_terminals = false,
+      highlights = {
+        Normal = {
+          guibg = "none",
+        },
+      },
+    },
+  },
+  {
+    "shortcuts/no-neck-pain.nvim",
+    opts = {
+      width = 120,
+      autocmds = {
+        enableOnVimEnter = true,
+      },
+    },
+  },
+  {
+    "dracula/vim",
+    name = "dracula",
+    config = function()
+      vim.cmd("colorscheme dracula")
+      local dracula_foreground = "#f8f8f2"
+      local dracula_background = "#21222c"
+      local dracula_current_line = "#44475a" -- TODO: Highlight selected buffer
+      local dracula_purple = "#bd93f9"
+      -- Transparent backround to reveal dark terminal background
+      vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+      vim.api.nvim_set_hl(0, "WinSeparator", { bg = "none" })
+      vim.api.nvim_set_hl(0, "Title", { fg = dracula_foreground })
+      -- Customize the dracula theme for bufferline
+      vim.api.nvim_set_hl(0, "BufferLineFill", { bg = dracula_background })
+      vim.api.nvim_set_hl(0, "BufferLineBackground", { bg = dracula_background })
+      vim.api.nvim_set_hl(0, "BufferLineCloseButton", { bg = dracula_background })
+      vim.api.nvim_set_hl(0, "BufferLineCloseButtonSelected", { bg = dracula_background })
+      vim.api.nvim_set_hl(
+        0,
+        "BufferLineBufferSelected",
+        { fg = dracula_foreground, bg = dracula_background, bold = true }
+      )
+      vim.api.nvim_set_hl(0, "BufferLineSeparator", { bg = dracula_background })
+      vim.api.nvim_set_hl(0, "BufferLineSeparatorSelected", { bg = dracula_background })
+      vim.api.nvim_set_hl(0, "BufferLineIndicatorSelected", { fg = dracula_purple, bg = dracula_background })
+      vim.api.nvim_set_hl(0, "BufferLineIconDefault", { fg = dracula_foreground, bg = dracula_background })
+    end,
+  },
+  {
+    "nvim-lualine/lualine.nvim",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function()
+      -- Customize dracula theme for lualine
+      local dracula = require("lualine.themes.dracula")
+      local dracula_background = "#21222c"
+      local dracula_current_line = "#44475a"
+      local modes = { "normal", "insert", "visual", "replace", "command", "inactive" }
+      for _, mode in ipairs(modes) do
+        dracula[mode].b.bg = dracula_current_line
+        dracula[mode].c.bg = dracula_background
+      end
+      require("lualine").setup({
+        options = {
+          theme = dracula,
+          globalstatus = true,
+          section_separators = "",
+          component_separators = "",
+        },
+        sections = {
+          lualine_b = { "branch" },
+          lualine_c = { { "filename", file_status = true, path = 1 } },
+          lualine_x = { "encoding" },
+          lualine_y = { "filetype" },
+        },
+      })
+    end,
+  },
+  {
+    "akinsho/bufferline.nvim",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function()
+      require("bufferline").setup({
+        options = {
+          always_show_bufferline = false,
+          show_buffer_close_icons = false,
+        },
+      })
+      map("n", "<C-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Previous buffer" })
+      map("n", "<C-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+      map("n", "<C-S-h>", "<cmd>BufferLineMovePrev<cr>", { desc = "Move buffer left" })
+      map("n", "<C-S-l>", "<cmd>BufferLineMoveNext<cr>", { desc = "Move buffer right" })
+      map("n", "<C-q>", "<cmd>bdelete<cr>", { desc = "Close buffer" })
+      map("n", "<C-p>", "<cmd>BufferLinePick<cr>", { desc = "Pick buffer" })
+    end,
+  },
+  {
     "goolord/alpha-nvim",
     config = function()
       dashboard = require("alpha.themes.dashboard")
       local header_art = {
-          "███    ██ ███████  ██████  ██    ██ ██ ███    ███",
-          "████   ██ ██      ██    ██ ██    ██ ██ ████  ████",
-          "██ ██  ██ █████   ██    ██ ██    ██ ██ ██ ████ ██",
-          "██  ██ ██ ██      ██    ██  ██  ██  ██ ██  ██  ██",
-          "██   ████ ███████  ██████    ████   ██ ██      ██",
+        "███    ██ ███████  ██████  ██    ██ ██ ███    ███",
+        "████   ██ ██      ██    ██ ██    ██ ██ ████  ████",
+        "██ ██  ██ █████   ██    ██ ██    ██ ██ ██ ████ ██",
+        "██  ██ ██ ██      ██    ██  ██  ██  ██ ██  ██  ██",
+        "██   ████ ███████  ██████    ████   ██ ██      ██",
       }
       dashboard.section.header.val = header_art
       dashboard.section.header.opts = {
@@ -353,26 +350,32 @@ require("lazy").setup({
     end,
   },
   {
-    "akinsho/toggleterm.nvim",
+    "zbirenbaum/copilot.lua",
+    lazy = false,
     opts = {
-      open_mapping = "<C-t>",
-      size = 20,
-      shade_terminals = false,
-      highlights = {
-        Normal = {
-          guibg = "none",
+      suggestion = {
+        auto_trigger = true,
+        debounce = 50,
+        keymap = {
+          accept = false,
         },
       },
-    },
-  },
-  {
-    "shortcuts/no-neck-pain.nvim",
-    opts = {
-      width = 120,
-      autocmds = {
-        enableOnVimEnter = true,
+      filetypes = {
+        yaml = true,
+        markdown = true,
+        ["."] = true,
       },
     },
+    config = function(_, opts)
+      require("copilot").setup(opts)
+      local suggestion = require("copilot.suggestion")
+      map("i", "<Tab>", function()
+        if suggestion.is_visible() then
+          return suggestion.accept()
+        else
+          return "<Tab>"
+        end
+      end, { expr = true, silent = true, desc = "Accept Copilot suggestion" })
+    end,
   },
 })
-
