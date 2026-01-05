@@ -232,19 +232,6 @@ require("lazy").setup({
     event = { "BufReadPost", "BufNewFile" },
   },
   {
-    "akinsho/toggleterm.nvim",
-    opts = {
-      open_mapping = "<C-t>",
-      size = 20,
-      shade_terminals = false,
-      highlights = {
-        Normal = {
-          guibg = "none",
-        },
-      },
-    },
-  },
-  {
     "shortcuts/no-neck-pain.nvim",
     opts = {
       width = 120,
