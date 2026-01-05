@@ -1,6 +1,8 @@
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+vim.g.have_nerd_font = true
+
 -- =========================
 -- Options
 -- =========================
@@ -11,6 +13,7 @@ opt.smartindent = true
 opt.smartcase = true
 opt.incsearch = true
 opt.showmatch = true
+opt.scrolloff = 10
 opt.tabstop = 4
 opt.shiftwidth = 4
 opt.expandtab = true
@@ -54,6 +57,13 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+vim.api.nvim_create_autocmd("TextYankPost", {
+  desc = "Highlight yanked text",
+  callback = function()
+    vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
+  end,
+})
+
 -- =========================
 -- Key mappings
 -- =========================
@@ -68,7 +78,7 @@ map("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
 map("n", "n", "nzzzv", { desc = "Next search result and center" })
 map("n", "N", "Nzzzv", { desc = "Previous search result and center" })
 
-map("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Substitute word under cursor" })
+map("n", "<leader>r", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Substitute word under cursor" })
 
 map("x", "<leader>p", [["_dP]], { desc = "Paste without overwriting clipboard" })
 map({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete without overwriting clipboard" })
@@ -76,7 +86,7 @@ map({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete without overwriting cli
 map({ "n", "v" }, "<leader>y", [["+y]], { desc = "Yank to system clipboard" })
 map("n", "<leader>Y", [["+Y]], { desc = "Yank line to system clipboard" })
 
-map("n", "<Esc>", "<cmd>nohlsearch<cr>")
+map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlighting" })
 
 -- Quick run
 local pedal_key = "<F2>"
@@ -119,14 +129,24 @@ require("lazy").setup({
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
+    opts = {
+      auto_install = true,
+      highlight = {
+        enable = true,
+      },
+      indent = {
+        enable = true,
+      },
+    },
   },
   {
     "nvim-telescope/telescope.nvim",
     lazy = false, -- Required for compatability with alpha-nvim
     keys = {
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find Files" },
-      { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live Grep" },
-      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
+      { "<leader>sf", "<cmd>Telescope find_files<cr>", desc = "Search files" },
+      { "<leader>sg", "<cmd>Telescope live_grep<cr>", desc = "Search with grep" },
+      { "<leader>sb", "<cmd>Telescope buffers<cr>", desc = "Search in buffers" },
+      { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Search help tags" },
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
