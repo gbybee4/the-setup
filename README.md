@@ -32,7 +32,7 @@ As this repository is specific to my personal configuration, you likely want to 
 
 This playbook installs/configures:
 
-- Vim
+- Neovim
 - Basic operating tools: [i3](https://i3wm.org/), [rofi](https://github.com/davatorium/rofi), [Alacritty](https://github.com/alacritty/alacritty)
 - Bash shell customization
 - Development tools: [Docker](https://www.docker.com/), [Node.js](https://nodejs.org), [uv](https://github.com/astral-sh/uv)

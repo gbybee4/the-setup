@@ -1,9 +1,9 @@
 ---
-- name: Set editor to vim
+- name: Set editor to neovim
   community.general.git_config:
     scope: global
     name: core.editor
-    value: vim
+    value: nvim
 
 - name: Set push behavior
   community.general.git_config:

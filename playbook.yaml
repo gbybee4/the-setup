@@ -6,7 +6,6 @@
     - install_fonts
     - install_alacritty
     - configure_bash
-    - configure_vim
     - install_i3
     - configure_git
     - install_docker
@@ -14,3 +13,4 @@
     - install_python_tools
     - install_nodejs
     - install_infrastructure_tools
+    - setup_neovim

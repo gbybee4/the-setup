@@ -10,9 +10,11 @@ alias lh='ls -haltr'
 
 alias mkdirs='mkdir -pv'
 
-alias svi='sudo vim'
-
 alias qr='quick-run'
 
 alias tf='terraform'
 alias k='kubectl'
+
+alias vim='nvim'
+alias vi='nvim'
+alias svi='sudo nvim'

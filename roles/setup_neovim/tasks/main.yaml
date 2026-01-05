@@ -1,0 +1,25 @@
+---
+- name: Download neovim AppImage
+  become: true
+  ansible.builtin.get_url:
+    url: "https://github.com/neovim/neovim/releases/download/v{{ setup_neovim_version }}/nvim-linux-{{ ansible_architecture }}.appimage"
+    dest: "/usr/local/bin/nvim"
+    mode: "0755"
+    force: true
+
+- name: Create config directory for neovim
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/nvim"
+    state: directory
+    mode: "0755"
+
+- name: Copy configuration files for neovim
+  ansible.builtin.copy:
+    src: "files/config/"
+    dest: "{{ ansible_env.HOME }}/.config/nvim/"
+    mode: "0644"
+  changed_when: false # Bootstrapping touches lockfile
+
+- name: Sync lazy plugins for neovim
+  ansible.builtin.command: nvim --headless +Lazy! restore +qa
+  changed_when: false
