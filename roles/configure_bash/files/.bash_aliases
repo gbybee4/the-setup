@@ -14,6 +14,7 @@ alias qr='quick-run'
 
 alias tf='terraform'
 alias k='kubectl'
+alias tm='tmux attach || tmux new'
 
 alias vim='nvim'
 alias vi='nvim'
