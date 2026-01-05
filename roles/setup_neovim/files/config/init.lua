@@ -317,12 +317,12 @@ require("lazy").setup({
           show_buffer_close_icons = false,
         },
       })
-      map("n", "<C-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Previous buffer" })
-      map("n", "<C-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
-      map("n", "<C-S-h>", "<cmd>BufferLineMovePrev<cr>", { desc = "Move buffer left" })
-      map("n", "<C-S-l>", "<cmd>BufferLineMoveNext<cr>", { desc = "Move buffer right" })
-      map("n", "<C-q>", "<cmd>bdelete<cr>", { desc = "Close buffer" })
-      map("n", "<C-p>", "<cmd>BufferLinePick<cr>", { desc = "Pick buffer" })
+      map("n", "<A-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Previous buffer" })
+      map("n", "<A-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+      map("n", "<A-S-h>", "<cmd>BufferLineMovePrev<cr>", { desc = "Move buffer left" })
+      map("n", "<A-S-l>", "<cmd>BufferLineMoveNext<cr>", { desc = "Move buffer right" })
+      map("n", "<A-q>", "<cmd>bdelete<cr>", { desc = "Close buffer" })
+      map("n", "<A-p>", "<cmd>BufferLinePick<cr>", { desc = "Pick buffer" })
     end,
   },
   {
