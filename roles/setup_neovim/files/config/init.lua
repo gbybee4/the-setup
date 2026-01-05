@@ -284,6 +284,10 @@ require("lazy").setup({
     end,
   },
   {
+    "christopher-francisco/tmux-status.nvim",
+    opts = {},
+  },
+  {
     "nvim-lualine/lualine.nvim",
     dependencies = {
       "nvim-tree/nvim-web-devicons",
@@ -308,7 +312,7 @@ require("lazy").setup({
         sections = {
           lualine_b = { "branch" },
           lualine_c = { { "filename", file_status = true, path = 1 } },
-          lualine_x = { "encoding" },
+          lualine_x = { { require("tmux-status").tmux_session, cond = require("tmux-status").show } },
           lualine_y = { "filetype" },
         },
       })
