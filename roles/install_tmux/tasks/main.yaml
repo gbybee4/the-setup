@@ -19,4 +19,12 @@
   ansible.builtin.git:
     repo: https://github.com/tmux-plugins/tpm
     dest: ~/.tmux/plugins/tpm
+    version: v3.1.0
 
+- name: Install tmux plugins
+  ansible.builtin.command: ~/.tmux/plugins/tpm/bin/install_plugins
+  args:
+    creates: ~/.tmux/plugins/tpm/installed_plugins
+  environment:
+    TMUX_PLUGIN_MANAGER_PATH: ~/.tmux/plugins
+  changed_when: false
