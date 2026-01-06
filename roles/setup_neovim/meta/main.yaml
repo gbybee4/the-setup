@@ -1,5 +1,6 @@
 ---
 dependencies:
+  - role: install_tmux
   - role: install_fonts
   - role: install_nodejs
   - role: install_utils

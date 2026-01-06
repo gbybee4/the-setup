@@ -13,4 +13,5 @@
     - install_python_tools
     - install_nodejs
     - install_infrastructure_tools
+    - install_tmux
     - setup_neovim

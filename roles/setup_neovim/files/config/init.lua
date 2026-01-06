@@ -232,25 +232,21 @@ require("lazy").setup({
     event = { "BufReadPost", "BufNewFile" },
   },
   {
-    "akinsho/toggleterm.nvim",
-    opts = {
-      open_mapping = "<C-t>",
-      size = 20,
-      shade_terminals = false,
-      highlights = {
-        Normal = {
-          guibg = "none",
-        },
-      },
-    },
-  },
-  {
     "shortcuts/no-neck-pain.nvim",
     opts = {
       width = 120,
       autocmds = {
         enableOnVimEnter = true,
       },
+    },
+  },
+  {
+    "christoomey/vim-tmux-navigator",
+    keys = {
+      { "<C-h>", "<cmd>TmuxNavigateLeft<cr>", desc = "Navigate to left tmux pane" },
+      { "<C-j>", "<cmd>TmuxNavigateDown<cr>", desc = "Navigate to down tmux pane" },
+      { "<C-k>", "<cmd>TmuxNavigateUp<cr>", desc = "Navigate to up tmux pane" },
+      { "<C-l>", "<cmd>TmuxNavigateRight<cr>", desc = "Navigate to right tmux pane" },
     },
   },
   {
@@ -284,6 +280,10 @@ require("lazy").setup({
     end,
   },
   {
+    "christopher-francisco/tmux-status.nvim",
+    opts = {},
+  },
+  {
     "nvim-lualine/lualine.nvim",
     dependencies = {
       "nvim-tree/nvim-web-devicons",
@@ -308,7 +308,7 @@ require("lazy").setup({
         sections = {
           lualine_b = { "branch" },
           lualine_c = { { "filename", file_status = true, path = 1 } },
-          lualine_x = { "encoding" },
+          lualine_x = { { require("tmux-status").tmux_session, cond = require("tmux-status").show } },
           lualine_y = { "filetype" },
         },
       })
@@ -326,12 +326,12 @@ require("lazy").setup({
           show_buffer_close_icons = false,
         },
       })
-      map("n", "<C-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Previous buffer" })
-      map("n", "<C-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
-      map("n", "<C-S-h>", "<cmd>BufferLineMovePrev<cr>", { desc = "Move buffer left" })
-      map("n", "<C-S-l>", "<cmd>BufferLineMoveNext<cr>", { desc = "Move buffer right" })
-      map("n", "<C-q>", "<cmd>bdelete<cr>", { desc = "Close buffer" })
-      map("n", "<C-p>", "<cmd>BufferLinePick<cr>", { desc = "Pick buffer" })
+      map("n", "<A-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Previous buffer" })
+      map("n", "<A-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
+      map("n", "<A-S-h>", "<cmd>BufferLineMovePrev<cr>", { desc = "Move buffer left" })
+      map("n", "<A-S-l>", "<cmd>BufferLineMoveNext<cr>", { desc = "Move buffer right" })
+      map("n", "<A-q>", "<cmd>bdelete<cr>", { desc = "Close buffer" })
+      map("n", "<A-p>", "<cmd>BufferLinePick<cr>", { desc = "Pick buffer" })
     end,
   },
   {

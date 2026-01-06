@@ -1,0 +1,30 @@
+---
+- name: Install tmux
+  become: true
+  ansible.builtin.apt:
+    name:
+      - tmux
+    state: present
+    update_cache: true
+
+- name: Copy tmux configuration file
+  ansible.builtin.copy:
+    src: tmux.conf
+    dest: ~/.tmux.conf
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
+    mode: "0644"
+
+- name: Install tmux plugin manager
+  ansible.builtin.git:
+    repo: https://github.com/tmux-plugins/tpm
+    dest: ~/.tmux/plugins/tpm
+    version: v3.1.0
+
+- name: Install tmux plugins
+  ansible.builtin.command: ~/.tmux/plugins/tpm/bin/install_plugins
+  args:
+    creates: ~/.tmux/plugins/tpm/installed_plugins
+  environment:
+    TMUX_PLUGIN_MANAGER_PATH: ~/.tmux/plugins
+  changed_when: false

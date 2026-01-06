@@ -16,3 +16,15 @@ source <(kubectl completion bash)
 source <(helm completion bash)
 complete -C '/usr/local/bin/aws_completer' aws
 
+# Tmux + nvim open
+tvi() {
+    local root name
+
+    if root=$(git rev-parse --show-toplevel 2> /dev/null); then
+        name=$(basename "$root")
+        tmux attach -t "$name" || tmux new -s "$name" -c "$root" nvim
+    else
+        tmux attach || tmux new nvim
+    fi
+}
+
