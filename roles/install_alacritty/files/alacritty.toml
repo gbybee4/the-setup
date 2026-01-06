@@ -13,3 +13,10 @@ offset.y = -3
 
 [font.normal]
 family = "JetBrainsMono Nerd Font"
+
+[keyboard]
+bindings = [
+  { key = "PageUp", mods = "Shift", action = "ScrollPageUp" },
+  { key = "PageDown", mods = "Shift", action = "ScrollPageDown" }
+]
+
