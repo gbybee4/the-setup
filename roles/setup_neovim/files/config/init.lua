@@ -350,8 +350,8 @@ require("lazy").setup({
         position = "center",
       }
       dashboard.section.buttons.val = {
-        dashboard.button("<leader>ff", "  Find File", "<cmd>Telescope find_files<cr>"),
-        dashboard.button("<leader>fg", "  Live Grep", "<cmd>Telescope live_grep<cr>"),
+        dashboard.button("<leader>sf", "  Search for File", "<cmd>Telescope find_files<cr>"),
+        dashboard.button("<leader>sg", "  Search with Grep", "<cmd>Telescope live_grep<cr>"),
       }
       window_height = vim.api.nvim_win_get_height(0)
       content_height = #header_art + 2 * #dashboard.section.buttons.val + 2
