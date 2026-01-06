@@ -15,8 +15,7 @@ alias fd='fdfind'
 alias qr='quick-run'
 
 alias tf='terraform'
-alias k='kubectl'
-alias tm='tmux attach || tmux new'
+alias kc='kubectl'
 
 alias vim='nvim'
 alias vi='nvim'
