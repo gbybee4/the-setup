@@ -5,3 +5,17 @@
     name: "{{ install_utils_packages }}"
     state: present
     update_cache: true
+
+- name: Create bat config directory
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/bat"
+    state: directory
+    mode: "755"
+
+- name: Copy bat config file
+  ansible.builtin.copy:
+    content: |
+      --theme=Dracula
+    dest: "{{ ansible_env.HOME }}/.config/bat/config"
+    mode: "644"
+    backup: true

@@ -19,3 +19,5 @@ alias tm='tmux attach || tmux new'
 alias vim='nvim'
 alias vi='nvim'
 alias svi='sudo nvim'
+
+alias cat='batcat'
