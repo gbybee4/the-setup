@@ -8,7 +8,7 @@
 
 - name: Create bat config directory
   ansible.builtin.file:
-    dest: "{{ ansible_env.HOME }}/.config/bat"
+    path: "{{ ansible_env.HOME }}/.config/bat"
     state: directory
     mode: "755"
 
