@@ -10,6 +10,7 @@ local opt = vim.opt
 
 opt.relativenumber = true
 opt.smartindent = true
+opt.ignorecase = true
 opt.smartcase = true
 opt.incsearch = true
 opt.showmatch = true
