@@ -12,3 +12,4 @@ install_utils_packages:
   - ripgrep
   - fd-find
   - bat
+  - htop
