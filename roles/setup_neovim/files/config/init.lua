@@ -14,6 +14,7 @@ opt.ignorecase = true
 opt.smartcase = true
 opt.incsearch = true
 opt.showmatch = true
+opt.clipboard = "unnamedplus"
 opt.scrolloff = 10
 opt.tabstop = 4
 opt.shiftwidth = 4
@@ -83,9 +84,6 @@ map("n", "<leader>r", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { 
 
 map("x", "<leader>p", [["_dP]], { desc = "Paste without overwriting clipboard" })
 map({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete without overwriting clipboard" })
-
-map({ "n", "v" }, "<leader>y", [["+y]], { desc = "Yank to system clipboard" })
-map("n", "<leader>Y", [["+Y]], { desc = "Yank line to system clipboard" })
 
 map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlighting" })
 
