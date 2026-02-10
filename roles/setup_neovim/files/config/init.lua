@@ -87,6 +87,8 @@ map({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete without overwriting cli
 
 map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlighting" })
 
+map("n", "<leader>qq", ":bufdo bwipeout<CR>", { desc = "Close all buffers" })
+
 -- Quick run
 local pedal_key = "<F2>"
 map("n", pedal_key, function()
