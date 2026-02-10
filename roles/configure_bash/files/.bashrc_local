@@ -2,6 +2,7 @@ BASHRC_LOCAL_SOURCED=true
 
 # Use vim-style line editing in the shell
 set -o vi
+export EDITOR=vim
 
 # Add timestamps to history
 HISTTIMEFORMAT="%F %T "
