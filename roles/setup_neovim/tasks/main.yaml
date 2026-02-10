@@ -18,6 +18,7 @@
     src: "files/config/"
     dest: "{{ ansible_env.HOME }}/.config/nvim/"
     mode: "0644"
+    backup: true
   changed_when: false # Bootstrapping touches lockfile
 
 - name: Sync lazy plugins for neovim

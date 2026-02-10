@@ -8,6 +8,8 @@ install_utils_packages:
   - net-tools
   - speedtest-cli
   - python-is-python3
+  - fzf
   - ripgrep
   - fd-find
   - bat
+  - htop

@@ -20,6 +20,7 @@
     src: "i3_config"
     dest: "{{ ansible_env.HOME }}/.config/i3/config"
     mode: "644"
+    backup: true
   notify: Restart i3
 
 - name: Copy i3 blocks configuration
@@ -27,6 +28,7 @@
     src: "i3blocks_config"
     dest: "{{ ansible_env.HOME }}/.config/i3blocks/config"
     mode: "644"
+    backup: true
   notify: Restart i3
 
 - name: Create machine-specific display config template

@@ -10,9 +10,11 @@ local opt = vim.opt
 
 opt.relativenumber = true
 opt.smartindent = true
+opt.ignorecase = true
 opt.smartcase = true
 opt.incsearch = true
 opt.showmatch = true
+opt.clipboard = "unnamedplus"
 opt.scrolloff = 10
 opt.tabstop = 4
 opt.shiftwidth = 4
@@ -83,10 +85,9 @@ map("n", "<leader>r", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { 
 map("x", "<leader>p", [["_dP]], { desc = "Paste without overwriting clipboard" })
 map({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete without overwriting clipboard" })
 
-map({ "n", "v" }, "<leader>y", [["+y]], { desc = "Yank to system clipboard" })
-map("n", "<leader>Y", [["+Y]], { desc = "Yank line to system clipboard" })
-
 map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlighting" })
+
+map("n", "<leader>qq", ":bufdo bwipeout<CR>", { desc = "Close all buffers" })
 
 -- Quick run
 local pedal_key = "<F2>"
@@ -350,8 +351,8 @@ require("lazy").setup({
         position = "center",
       }
       dashboard.section.buttons.val = {
-        dashboard.button("<leader>ff", "  Find File", "<cmd>Telescope find_files<cr>"),
-        dashboard.button("<leader>fg", "  Live Grep", "<cmd>Telescope live_grep<cr>"),
+        dashboard.button("<leader>sf", "  Search for File", "<cmd>Telescope find_files<cr>"),
+        dashboard.button("<leader>sg", "  Search with Grep", "<cmd>Telescope live_grep<cr>"),
       }
       window_height = vim.api.nvim_win_get_height(0)
       content_height = #header_art + 2 * #dashboard.section.buttons.val + 2
@@ -398,4 +399,9 @@ require("lazy").setup({
       end, { expr = true, silent = true, desc = "Accept Copilot suggestion" })
     end,
   },
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+    opts = {},
+  }
 })
