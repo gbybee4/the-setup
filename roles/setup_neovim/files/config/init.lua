@@ -425,8 +425,30 @@ require("lazy").setup({
     },
     opts = {
       ensure_installed = { 
+        -- Python
         "basedpyright",
         "ruff",
+        -- C/C++
+        "clangd",
+        -- JavaScript/TypeScript
+        "ts_ls",
+        "eslint",
+        -- Infrastructure
+        "terraformls",
+        "helm_ls",
+        "dockerls",
+        -- Verilog
+        "verible",
+        -- Protocols
+        "buf_ls",
+        -- Bash
+        "bashls",
+        -- Lua
+        "lua_ls",
+        -- General
+        "jsonls",
+        "yamlls",
+        "marksman",
       },
     },
   },
@@ -453,19 +475,55 @@ require("lazy").setup({
         end, "Format buffer")
       end
 
-      vim.lsp.config("basedpyright", {
-        on_attach = on_attach,
-        settings = {
-          basedpyright = {
-            analysis = {
-              typeCheckingMode = "basic",
+      local servers = {
+        basedpyright = {
+          settings = {
+            basedpyright = {
+              analysis = {
+                typeCheckingMode = "basic",
+              },
             },
           },
         },
-      })
-      vim.lsp.config("ruff", {
-        on_attach = on_attach,
-      })
+        ruff = {},
+        clangd = {
+          cmd = {
+            "clangd",
+            "--background-index",
+            "--clang-tidy",
+            "--cross-file-rename",
+          },
+        },
+        ts_ls = {},
+        eslint = {},
+        terraformls = {},
+        helm_ls = {},
+        dockerls = {},
+        verible = {},
+        buf_ls = {},
+        bashls = {},
+        lua_ls = {
+          settings = {
+            Lua = {
+              diagnostics = {
+                globals = { "vim" },
+              },
+            },
+          },
+        },
+        jsonls = {},
+        yamlls = {
+          settings = {
+            yaml = {
+              keyOrdering = false,
+            },
+          },
+        },
+        marksman = {},
+      }
+      for name, config in pairs(servers) do
+        vim.lsp.config(name, vim.tbl_deep_extend("force", { on_attach = on_attach }, config))
+      end
     end,
   }
 })
