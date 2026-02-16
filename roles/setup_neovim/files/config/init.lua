@@ -165,10 +165,12 @@ require("lazy").setup({
     dependencies = {
       "nvim-lua/plenary.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+      "nvim-telescope/telescope-ui-select.nvim",
     },
     config = function()
       local telescope = require("telescope")
       telescope.load_extension("fzf")
+      telescope.load_extension("ui-select")
       telescope.setup({
         defaults = {
           file_ignore_patterns = { "%.git/" },
@@ -176,6 +178,13 @@ require("lazy").setup({
         pickers = {
           find_files = {
             hidden = true,
+          },
+        },
+        extensions = {
+          ["ui-select"] = {
+            require("telescope.themes").get_dropdown({
+              previewer = false,
+            }),
           },
         },
       })
