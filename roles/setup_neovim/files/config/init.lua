@@ -413,8 +413,8 @@ require("lazy").setup({
     end,
   },
   {
-    'MeanderingProgrammer/render-markdown.nvim',
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
     opts = {},
   },
   {
@@ -424,7 +424,7 @@ require("lazy").setup({
       { "williamboman/mason.nvim", opts = {} },
     },
     opts = {
-      ensure_installed = { 
+      ensure_installed = {
         -- Python
         "basedpyright",
         "ruff",
@@ -557,5 +557,5 @@ require("lazy").setup({
 
       null_ls.setup({ sources = sources })
     end,
-  }
+  },
 })
