@@ -1,2 +1,4 @@
 ---
 install_nodejs_major_version: "24"
+install_nodejs_global_packages:
+  - prettier

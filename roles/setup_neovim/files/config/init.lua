@@ -525,5 +525,37 @@ require("lazy").setup({
         vim.lsp.config(name, vim.tbl_deep_extend("force", { on_attach = on_attach }, config))
       end
     end,
+  },
+  {
+    "nvimtools/none-ls.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local null_ls = require("null-ls")
+
+      local formatting = null_ls.builtins.formatting
+      local diagnostics = null_ls.builtins.diagnostics
+      local code_actions = null_ls.builtins.code_actions
+
+      local sources = {
+        -- C/C++
+        formatting.clang_format,
+        -- JavaScript/TypeScript
+        formatting.prettier,
+        -- Infrastructure
+        formatting.terraform_fmt,
+        diagnostics.terraform_validate,
+        -- Verilog
+        formatting.verible_verilog_format,
+        -- Bash
+        formatting.shfmt,
+        formatting.shellharden,
+        -- Lua
+        formatting.stylua,
+        -- General
+        code_actions.gitsigns,
+      }
+
+      null_ls.setup({ sources = sources })
+    end,
   }
 })
