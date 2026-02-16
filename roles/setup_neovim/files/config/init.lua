@@ -26,6 +26,8 @@ opt.foldmethod = "expr"
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldlevel = 99
 opt.fillchars:append({ eob = " " })
+opt.winborder = "rounded"
+opt.updatetime = 250
 
 -- =========================
 -- Autocommands
@@ -63,6 +65,17 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight yanked text",
   callback = function()
     vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
+  end,
+})
+
+vim.api.nvim_create_autocmd("CursorHold", {
+  desc = "Show diagnostics in a floating window on hover",
+  callback = function()
+    local opts = {
+      focusable = false,
+      close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+    }
+    vim.diagnostic.open_float(nil, opts)
   end,
 })
 
@@ -403,5 +416,56 @@ require("lazy").setup({
     'MeanderingProgrammer/render-markdown.nvim',
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
     opts = {},
+  },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      { "williamboman/mason.nvim", opts = {} },
+    },
+    opts = {
+      ensure_installed = { 
+        "basedpyright",
+        "ruff",
+      },
+    },
+  },
+  {
+    "neovim/nvim-lspconfig",
+    config = function()
+      local on_attach = function(client, bufnr)
+        local bufmap = function(mode, lhs, rhs, desc)
+          vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+        end
+
+        local telescope_builtin = require("telescope.builtin")
+        bufmap("n", "gd", vim.lsp.buf.definition, "Go to definition")
+        bufmap("n", "gi", vim.lsp.buf.implementation, "Go to implementation")
+        bufmap("n", "K", vim.lsp.buf.hover, "Hover documentation")
+        bufmap("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+        bufmap("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
+        bufmap("n", "<leader>sr", telescope_builtin.lsp_references, "Search references")
+        bufmap("n", "<leader>sd", function()
+          telescope_builtin.diagnostics({ bufnr = 0 })
+        end, "Search diagnostics")
+        bufmap("n", "<leader>f", function()
+          vim.lsp.buf.format({ async = true })
+        end, "Format buffer")
+      end
+
+      vim.lsp.config("basedpyright", {
+        on_attach = on_attach,
+        settings = {
+          basedpyright = {
+            analysis = {
+              typeCheckingMode = "basic",
+            },
+          },
+        },
+      })
+      vim.lsp.config("ruff", {
+        on_attach = on_attach,
+      })
+    end,
   }
 })
