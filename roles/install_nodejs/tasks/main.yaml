@@ -21,8 +21,8 @@
   become: true
 
 - name: Install global npm packages
-  ansible.builtin.npm:
+  community.general.npm:
     name: "{{ item }}"
-    global: yes
+    global: true
   loop: "{{ install_nodejs_global_packages }}"
   become: true
