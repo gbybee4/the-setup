@@ -11,19 +11,10 @@ scenario:
     - verify
     - destroy
 driver:
-  name: vagrant
-  provider:
-    name: virtualbox
+  name: docker
 platforms:
   - name: ubuntu
-    box: ubuntu/jammy64
-    memory: 2048
-    cpus: 2
-    interfaces:
-      - auto_config: true
-        network_name: private_network
-        type: "static"
-        ip: "192.168.56.10"
+    image: ubuntu:24.04
 provisioner:
   name: ansible
   config_options:
