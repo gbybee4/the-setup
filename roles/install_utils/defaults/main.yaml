@@ -16,3 +16,4 @@ install_utils_packages:
   - bat
   - htop
   - clang-format
+  - shfmt
