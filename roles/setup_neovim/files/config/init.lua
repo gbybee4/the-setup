@@ -26,6 +26,18 @@ opt.foldmethod = "expr"
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldlevel = 99
 opt.fillchars:append({ eob = " " })
+opt.winborder = "rounded"
+opt.updatetime = 250
+
+-- =========================
+-- Filetypes
+-- =========================
+
+vim.filetype.add({
+  pattern = {
+    [".*/templates/.*%.ya?ml"] = "helm",
+  },
+})
 
 -- =========================
 -- Autocommands
@@ -63,6 +75,19 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight yanked text",
   callback = function()
     vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
+  end,
+})
+
+vim.api.nvim_create_autocmd("CursorHold", {
+  desc = "Show diagnostics in a floating window on hover",
+  callback = function()
+    local opts = {
+      focusable = false,
+      close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+    }
+    if #vim.diagnostic.get(0) > 0 then
+      vim.diagnostic.open_float(nil, opts)
+    end
   end,
 })
 
@@ -152,10 +177,12 @@ require("lazy").setup({
     dependencies = {
       "nvim-lua/plenary.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+      "nvim-telescope/telescope-ui-select.nvim",
     },
     config = function()
       local telescope = require("telescope")
       telescope.load_extension("fzf")
+      telescope.load_extension("ui-select")
       telescope.setup({
         defaults = {
           file_ignore_patterns = { "%.git/" },
@@ -163,6 +190,13 @@ require("lazy").setup({
         pickers = {
           find_files = {
             hidden = true,
+          },
+        },
+        extensions = {
+          ["ui-select"] = {
+            require("telescope.themes").get_dropdown({
+              previewer = false,
+            }),
           },
         },
       })
@@ -400,8 +434,151 @@ require("lazy").setup({
     end,
   },
   {
-    'MeanderingProgrammer/render-markdown.nvim',
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
     opts = {},
-  }
+  },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      { "williamboman/mason.nvim", opts = {} },
+    },
+    opts = {
+      ensure_installed = {
+        -- Python
+        "basedpyright",
+        "ruff",
+        -- C/C++
+        "clangd",
+        -- JavaScript/TypeScript
+        "ts_ls",
+        "eslint",
+        -- Infrastructure
+        "terraformls",
+        "helm_ls",
+        "dockerls",
+        -- Verilog
+        "verible",
+        -- Protocols
+        "buf_ls",
+        -- Bash
+        "bashls",
+        -- Lua
+        "lua_ls",
+        -- General
+        "jsonls",
+        "yamlls",
+        "marksman",
+      },
+    },
+  },
+  {
+    "neovim/nvim-lspconfig",
+    config = function()
+      local on_attach = function(client, bufnr)
+        local bufmap = function(mode, lhs, rhs, desc)
+          vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+        end
+
+        local telescope_builtin = require("telescope.builtin")
+        bufmap("n", "gd", telescope_builtin.lsp_definitions, "Go to definition")
+        bufmap("n", "gi", telescope_builtin.lsp_implementations, "Go to implementation")
+        bufmap("n", "K", vim.lsp.buf.hover, "Hover documentation")
+        bufmap("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+        bufmap("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
+        bufmap("n", "<leader>sr", telescope_builtin.lsp_references, "Search references")
+        bufmap("n", "<leader>sd", function()
+          telescope_builtin.diagnostics({ bufnr = 0 })
+        end, "Search diagnostics")
+        bufmap("n", "<leader>f", function()
+          vim.lsp.buf.format({ async = true })
+        end, "Format buffer")
+      end
+
+      local servers = {
+        basedpyright = {
+          settings = {
+            basedpyright = {
+              analysis = {
+                typeCheckingMode = "basic",
+              },
+            },
+          },
+        },
+        ruff = {},
+        clangd = {
+          cmd = {
+            "clangd",
+            "--background-index",
+            "--clang-tidy",
+            "--cross-file-rename",
+          },
+        },
+        ts_ls = {},
+        eslint = {},
+        terraformls = {},
+        helm_ls = {
+          filetypes = { "helm" },
+        },
+        dockerls = {},
+        verible = {},
+        buf_ls = {},
+        bashls = {},
+        lua_ls = {
+          settings = {
+            Lua = {
+              diagnostics = {
+                globals = { "vim" },
+              },
+            },
+          },
+        },
+        jsonls = {},
+        yamlls = {
+          settings = {
+            yaml = {
+              keyOrdering = false,
+            },
+          },
+        },
+        marksman = {},
+      }
+      for name, config in pairs(servers) do
+        vim.lsp.config(name, vim.tbl_deep_extend("force", { on_attach = on_attach }, config))
+      end
+    end,
+  },
+  {
+    "nvimtools/none-ls.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local null_ls = require("null-ls")
+
+      local formatting = null_ls.builtins.formatting
+      local diagnostics = null_ls.builtins.diagnostics
+      local code_actions = null_ls.builtins.code_actions
+
+      local sources = {
+        -- C/C++
+        formatting.clang_format,
+        -- JavaScript/TypeScript
+        formatting.prettier,
+        -- Infrastructure
+        formatting.terraform_fmt,
+        diagnostics.terraform_validate,
+        -- Verilog
+        formatting.verible_verilog_format,
+        -- Bash
+        formatting.shfmt,
+        formatting.shellharden,
+        -- Lua
+        formatting.stylua,
+        -- General
+        code_actions.gitsigns,
+      }
+
+      null_ls.setup({ sources = sources })
+    end,
+  },
 })

@@ -15,3 +15,5 @@ install_utils_packages:
   - fd-find
   - bat
   - htop
+  - clang-format
+  - shfmt

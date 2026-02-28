@@ -1,0 +1,4 @@
+---
+install_rust_tools_cargo_packages:
+  - shellharden
+  - stylua

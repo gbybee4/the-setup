@@ -19,3 +19,10 @@
     state: present
     update_cache: true
   become: true
+
+- name: Install global npm packages
+  community.general.npm:
+    name: "{{ item }}"
+    global: true
+  loop: "{{ install_nodejs_global_packages }}"
+  become: true

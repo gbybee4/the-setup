@@ -1,0 +1,30 @@
+---
+- name: Download rustup install script
+  ansible.builtin.get_url:
+    url: "https://sh.rustup.rs"
+    dest: /tmp/rustup_install.sh
+    mode: "755"
+
+- name: Install rust
+  ansible.builtin.command: /tmp/rustup_install.sh -y
+  args:
+    creates: "{{ ansible_env.HOME }}/.cargo/bin/cargo"
+
+- name: Install cargo packages
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.cargo/bin/cargo install {{ item }}"
+  args:
+    creates: "{{ ansible_env.HOME }}/.cargo/bin/{{ item }}"
+  loop: "{{ install_rust_tools_cargo_packages }}"
+
+- name: Ensure systemd user environment directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/environment.d"
+    state: directory
+    mode: "0755"
+
+- name: Ensure cargo bin is in PATH via systemd environment
+  ansible.builtin.copy:
+    dest: "{{ ansible_env.HOME }}/.config/environment.d/cargo.conf"
+    content: |
+      PATH=$HOME/.cargo/bin:$PATH
+    mode: "0644"

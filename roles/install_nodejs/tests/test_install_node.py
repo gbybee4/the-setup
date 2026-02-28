@@ -20,3 +20,8 @@ def test_correct_node_version_is_installed(host):
 def test_npm_is_executable(host):
     command = host.run("npm --version")
     assert command.rc == 0, "npm should be installed and executable"
+
+
+def test_prettier_is_installed(host):
+    command = host.run("prettier --version")
+    assert command.rc == 0, "Prettier should be installed and executable"
