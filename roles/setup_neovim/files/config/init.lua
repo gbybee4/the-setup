@@ -482,8 +482,8 @@ require("lazy").setup({
         end
 
         local telescope_builtin = require("telescope.builtin")
-        bufmap("n", "gd", vim.lsp.buf.definition, "Go to definition")
-        bufmap("n", "gi", vim.lsp.buf.implementation, "Go to implementation")
+        bufmap("n", "gd", telescope_builtin.lsp_definitions, "Go to definition")
+        bufmap("n", "gi", telescope_builtin.lsp_implementations, "Go to implementation")
         bufmap("n", "K", vim.lsp.buf.hover, "Hover documentation")
         bufmap("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
         bufmap("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
