@@ -13,6 +13,7 @@
     src: "/opt/nvim-linux-{{ ansible_architecture }}/bin/nvim"
     dest: /usr/local/bin/nvim
     state: link
+    force: true
 
 - name: Create config directory for neovim
   ansible.builtin.file:
