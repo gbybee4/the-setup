@@ -167,7 +167,7 @@ require("lazy").setup({
     },
     {
         "nvim-telescope/telescope.nvim",
-        lazy = false, -- Required for compatability with alpha-nvim
+        lazy = false, -- Required for compatibility with alpha-nvim
         keys = {
             { "<leader>sf", "<cmd>Telescope find_files<cr>", desc = "Search files" },
             { "<leader>sg", "<cmd>Telescope live_grep<cr>",  desc = "Search with grep" },
@@ -293,7 +293,7 @@ require("lazy").setup({
             local dracula_background = "#21222c"
             local dracula_current_line = "#44475a" -- TODO: Highlight selected buffer
             local dracula_purple = "#bd93f9"
-            -- Transparent backround to reveal dark terminal background
+            -- Transparent background to reveal dark terminal background
             vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
             vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
             vim.api.nvim_set_hl(0, "WinSeparator", { bg = "none" })
