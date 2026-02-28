@@ -573,7 +573,9 @@ require("lazy").setup({
         formatting.shfmt,
         formatting.shellharden,
         -- Lua
-        formatting.stylua,
+        formatting.stylua.with({
+          extra_args = { "--indent-type", "Spaces", "--indent-width", "4" },
+        }),
         -- General
         code_actions.gitsigns,
       }
