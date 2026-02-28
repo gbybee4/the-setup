@@ -30,6 +30,16 @@ opt.winborder = "rounded"
 opt.updatetime = 250
 
 -- =========================
+-- Filetypes
+-- =========================
+
+vim.filetype.add({
+  pattern = {
+    [".*/templates/.*%.ya?ml"] = "helm",
+  },
+})
+
+-- =========================
 -- Autocommands
 -- =========================
 
@@ -508,7 +518,9 @@ require("lazy").setup({
         ts_ls = {},
         eslint = {},
         terraformls = {},
-        helm_ls = {},
+        helm_ls = {
+          filetypes = { "helm" },
+        },
         dockerls = {},
         verible = {},
         buf_ls = {},
