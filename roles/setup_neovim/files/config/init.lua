@@ -372,7 +372,7 @@ require("lazy").setup({
     {
         "goolord/alpha-nvim",
         config = function()
-            dashboard = require("alpha.themes.dashboard")
+            local dashboard = require("alpha.themes.dashboard")
             local header_art = {
                 "███    ██ ███████  ██████  ██    ██ ██ ███    ███",
                 "████   ██ ██      ██    ██ ██    ██ ██ ████  ████",
@@ -388,9 +388,8 @@ require("lazy").setup({
                 dashboard.button("<leader>sf", "  Search for File", "<cmd>Telescope find_files<cr>"),
                 dashboard.button("<leader>sg", "  Search with Grep", "<cmd>Telescope live_grep<cr>"),
             }
-            window_height = vim.api.nvim_win_get_height(0)
-            content_height = #header_art + 2 * #dashboard.section.buttons.val + 2
-            padding_height = math.max(0, math.floor((window_height - #header_art) / 2))
+            local window_height = vim.api.nvim_win_get_height(0)
+            local padding_height = math.max(0, math.floor((window_height - #header_art) / 2))
             local opts = {
                 layout = {
                     { type = "padding", val = padding_height },
