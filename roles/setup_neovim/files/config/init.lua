@@ -75,7 +75,9 @@ vim.api.nvim_create_autocmd("CursorHold", {
       focusable = false,
       close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
     }
-    vim.diagnostic.open_float(nil, opts)
+    if #vim.diagnostic.get(0) > 0 then
+      vim.diagnostic.open_float(nil, opts)
+    end
   end,
 })
 
